@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        container_name: php
+        depends_on:
+          - db
+        env_file:
+            - backend/.env
+        volumes:
+            - ./backend:/var/www/backend
+
+    app:
+        image: nginx:1.14-alpine
+        container_name: app
+        depends_on:
+            - php
+        env_file:
+            - backend/.env
+        ports:
+            - 8080:80
+        volumes:
+            - ./backend/public:/var/www/backend/public:ro
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d/
+
+    db:
+        container_name: db
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+            MYSQL_DATABASE: MYSQL_DATABASE
+            MYSQL_USER: MYSQL_USER
+            MYSQL_PASSWORD: MYSQL_PASSWORD
+        ports:
+            - "9906:3306"
+
+    adminer:
+        image: adminer:latest
+        ports:
+            - 8000:8080
+        depends_on:
+            - db
+        environment:
+            ADMINER_DEFAULT_SERVER: db
