@@ -15,7 +15,7 @@ Guide d'installation :
    - docker-compose build
    - docker-compose up
    - docker exec -it php bash
-   - bin/console d:m:m
+   - bin/console d: m:m
    
    Populate de la base de données : j'ai fais le chois de le faire avec des migration.
 
