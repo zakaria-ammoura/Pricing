@@ -79,6 +79,17 @@ class ArticleController extends AbstractFOSRestController
                     'data' => $exception->getData()
                 ], $exception->getCode()
             );
+        } catch (\Throwable $throwable) {
+            $this->logger->error(
+                $throwable->getMessage(),
+                [
+                    'file' => $throwable->getFile(),
+                    'line' => $throwable->getLine(),
+                    'trace' => $throwable->getTrace()
+                ]
+            );
+
+            return $this->view(ErrorFormatter::EXCEPTION_DEFAULT_MESSAGE, $throwable->getCode());
         }
     }
 }
